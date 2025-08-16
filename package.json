@@ -1,0 +1,28 @@
+{
+  "name": "calmui",
+  "version": "1.0.0",
+  "type": "module",
+  "bin": {
+    "calmui": "./bin/index.js"
+  },
+  "scripts": {
+    "build": "tsc && tsc-esm-fix dist/**/*.js",
+    "local-install": "npm run build && npm link && npm i -g ."
+  },
+  "keywords": [],
+  "author": "Sagar Sen",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "chalk": "^5.5.0",
+    "commander": "^14.0.0",
+    "fs-extra": "^11.3.1"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^24.3.0",
+    "ts-node": "^10.9.2",
+    "tsc-esm-fix": "^3.1.2",
+    "typescript": "^5.9.2"
+  }
+}
