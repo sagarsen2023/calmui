@@ -12,6 +12,13 @@ export const generateRouteCommand = new Command("generate-route")
   .description("Generates a new route. Like /users, /accounts/create")
   .action((route: string) => {
     try {
+      if (!route.startsWith("/")) {
+        log(chalk.redBright("Route must start with a '/'"));
+        log(
+          chalk.redBright("Example: /users, /accounts/create, /products/:id")
+        );
+        return;
+      }
       log(chalk.blueBright(`Generating route: ${route}`));
 
       const cwd = process.cwd(); // Getting current directory

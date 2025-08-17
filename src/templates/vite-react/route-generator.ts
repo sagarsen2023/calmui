@@ -3,6 +3,9 @@ import path from "path";
 import { getCalmUiJson } from "../../lib/get-calmui-json";
 import textToCamelCase from "../../utils/text-to-camel-case";
 import firstLetterCapitalize from "../../utils/first-letter-capitalize";
+import chalk from "chalk";
+
+const log = (text: string) => console.log(chalk.greenBright(text));
 
 // ? Helpers only for route generation with vite and tanstack
 // * Following code gives output as folder1/[folder2]/[folder3] if the route is "/folder1/:folder2/:folder3"
@@ -90,6 +93,7 @@ function RouteComponent() {
 }
 `
   );
+  log(`✓ Generated route file: ${newRoutePath}`);
 
   // ---------- GENERATING MODULES FOR USING IN PAGES ----------
   const modulePath = path.join(
@@ -102,10 +106,11 @@ function RouteComponent() {
   fs.ensureDirSync(modulePath);
   const newModulePath = `${modulePath}/index.${fileExtension}x`;
   fs.ensureFileSync(newModulePath);
-  const moduleName = firstLetterCapitalize({
-    str: lastStaticPath,
-    separator: "/",
-  });
+  const moduleName =
+    firstLetterCapitalize({
+      str: lastStaticPath,
+      separator: "/",
+    }) + "Module";
   fs.writeFileSync(
     newModulePath,
     `function ${moduleName}() {
@@ -115,6 +120,7 @@ function RouteComponent() {
 export default ${moduleName};
 `
   );
+  log(`✓ Generated module file: ${newModulePath}`);
 
   // ---------- GENERATING SERVICE FILE ----------
 
@@ -144,6 +150,7 @@ export const ${textToCamelCase({
 };
 `
     );
+    log(`✓ Generated service file: ${newServicePath}`);
 
     // ---------- GENERATING TYPESCRIPT INTERFACES ----------
     if (fileExtension === "ts") {
@@ -166,6 +173,7 @@ export const ${textToCamelCase({
 }
 `
       );
+      log(`✓ Generated typescript model file: ${newModelPath}`);
     }
   }
 };
