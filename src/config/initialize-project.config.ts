@@ -38,7 +38,6 @@ export const initCommand = new Command("init")
 
       // Running post-install commands
       projectConfig.postInstallCommands?.forEach((cmd) => {
-        log(chalk.blue(`Running: ${cmd}`));
         execSync(cmd, {
           stdio: "inherit",
         });
@@ -46,13 +45,13 @@ export const initCommand = new Command("init")
 
       // Copy template files if available
       if (projectConfig.templateFiles) {
-        log(chalk.blue("📂 Copying template files..."));
+        log(chalk.blueBright("📂 Copying template files..."));
         projectConfig.templateFiles.forEach(({ source, target }) => {
           try {
             const targetDir = path.dirname(target);
-            fs.ensureDirSync(targetDir);
-            fs.copyFileSync(source, target);
-            log(chalk.gray(`   ✓ ${target}`));
+            fs.ensureDirSync(targetDir); // ? If directory is not there it gets created
+            fs.copyFileSync(source, target); // ? Copying project files
+            log(chalk.greenBright(`   ✓ ${target}`));
           } catch (error: any) {
             log(
               chalk.yellow(

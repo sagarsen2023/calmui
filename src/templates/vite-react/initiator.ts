@@ -1,81 +1,84 @@
 import { ConfigOptions } from "..";
 
 export const viteReactConfig = (folderName: string): ConfigOptions => {
-  // Get the current template directory pointing to project-files
   const templateDir = `${__dirname}/project-files`;
-  console.log("templateDir:", templateDir);
-  console.log("folderName:", folderName);
 
   return {
     name: "Vite React",
     command: `npm create vite@latest ${folderName} -- --template react-ts`,
     postInstallCommands: [
-      
       // Install dependencies
-      `cd ${folderName} && npm install tailwindcss postcss autoprefixer @tailwindcss/vite @tanstack/react-router @tanstack/router-plugin lucide-react clsx tailwind-merge -D @tanstack/router-devtools`,
-      
-      `echo "✅ Vite React project with TanStack Router and Tailwind CSS setup complete!"`,
-      `echo "📁 Project structure created with routes, modules, hooks, constants, and contexts folders"`,
-      `echo "🎨 Tailwind CSS configured and ready to use"`,
-      `echo "🚀 Run 'npm run dev' to start the development server"`
+      `cd ${folderName} && npm install tailwindcss postcss autoprefixer @tailwindcss/vite @tanstack/react-router @tanstack/router-plugin lucide-react -D @tanstack/router-devtools -D @vitejs/plugin-react-swc -D @types/node`,
+
+      // Cleanup unnecessary files
+      `rm -f ${folderName}/src/App.tsx`,
+      `rm -f ${folderName}/src/App.css`,
+
+      `echo "✅ Vite React project with TanStack Router and Tailwind CSS setup complete using CalmUi!"`,
+      `git init`,
+      `git add .`,
+      `git commit -m "Initialized base project"`,
     ],
     templateFiles: [
+      // ? Updating Files based on configuration and ready to development
       {
         source: `${templateDir}/vite.config.ts`,
-        target: `${folderName}/vite.config.ts`
+        target: `${folderName}/vite.config.ts`,
       },
       {
-        source: `${templateDir}/tailwind.config.js`,
-        target: `${folderName}/tailwind.config.js`
+        source: `${templateDir}/tsconfig.json`,
+        target: `${folderName}/tsconfig.json`,
+      },
+      {
+        source: `${templateDir}/tsconfig.app.json`,
+        target: `${folderName}/tsconfig.app.json`,
       },
       {
         source: `${templateDir}/src/main.tsx`,
-        target: `${folderName}/src/main.tsx`
+        target: `${folderName}/src/main.tsx`,
       },
       {
         source: `${templateDir}/src/index.css`,
-        target: `${folderName}/src/index.css`
+        target: `${folderName}/src/index.css`,
       },
       {
         source: `${templateDir}/src/routes/__root.tsx`,
-        target: `${folderName}/src/routes/__root.tsx`
+        target: `${folderName}/src/routes/__root.tsx`,
       },
       {
         source: `${templateDir}/src/routes/index.tsx`,
-        target: `${folderName}/src/routes/index.tsx`
+        target: `${folderName}/src/routes/index.tsx`,
+      },
+
+      // ? Initializing blank folders for consistent development
+      {
+        source: `${templateDir}/src/components/.gitkeep`,
+        target: `${folderName}/src/components/.gitkeep`,
       },
       {
-        source: `${templateDir}/src/routes/about.tsx`,
-        target: `${folderName}/src/routes/about.tsx`
+        source: `${templateDir}/src/constants/.gitkeep`,
+        target: `${folderName}/src/constants/.gitkeep`,
       },
       {
-        source: `${templateDir}/src/lib/utils.ts`,
-        target: `${folderName}/src/lib/utils.ts`
+        source: `${templateDir}/src/hooks/.gitkeep`,
+        target: `${folderName}/src/hooks/.gitkeep`,
       },
       {
-        source: `${templateDir}/src/constants/index.ts`,
-        target: `${folderName}/src/constants/index.ts`
+        source: `${templateDir}/src/lib/.gitkeep`,
+        target: `${folderName}/src/lib/.gitkeep`,
       },
       {
-        source: `${templateDir}/src/hooks/index.ts`,
-        target: `${folderName}/src/hooks/index.ts`
+        source: `${templateDir}/src/models/.gitkeep`,
+        target: `${folderName}/src/models/.gitkeep`,
       },
       {
-        source: `${templateDir}/src/contexts/index.ts`,
-        target: `${folderName}/src/contexts/index.ts`
+        source: `${templateDir}/src/services/.gitkeep`,
+        target: `${folderName}/src/services/.gitkeep`,
       },
       {
-        source: `${templateDir}/src/modules/index.ts`,
-        target: `${folderName}/src/modules/index.ts`
+        source: `${templateDir}/src/utils/.gitkeep`,
+        target: `${folderName}/src/utils/.gitkeep`,
       },
-      {
-        source: `${templateDir}/src/components/index.ts`,
-        target: `${folderName}/src/components/index.ts`
-      },
-      {
-        source: `${templateDir}/src/utils/index.ts`,
-        target: `${folderName}/src/utils/index.ts`
-      }
     ],
   };
 };
