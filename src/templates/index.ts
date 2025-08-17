@@ -11,6 +11,10 @@ export interface ConfigOptions {
   name: string;
   command: string;
   postInstallCommands: string[];
+  templateFiles?: {
+    source: string;
+    target: string;
+  }[];
 }
 
 export const templateConfigs: TemplateConfig = {

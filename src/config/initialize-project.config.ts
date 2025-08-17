@@ -4,6 +4,8 @@ import { execSync } from "child_process";
 import chalk from "chalk";
 import { getTemplates } from "../lib/get-templates";
 import { templateConfigs } from "../templates";
+import fs from "fs-extra";
+import path from "path";
 
 const log = console.log;
 
@@ -41,6 +43,25 @@ export const initCommand = new Command("init")
           stdio: "inherit",
         });
       });
+
+      // Copy template files if available
+      if (projectConfig.templateFiles) {
+        log(chalk.blue("📂 Copying template files..."));
+        projectConfig.templateFiles.forEach(({ source, target }) => {
+          try {
+            const targetDir = path.dirname(target);
+            fs.ensureDirSync(targetDir);
+            fs.copyFileSync(source, target);
+            log(chalk.gray(`   ✓ ${target}`));
+          } catch (error: any) {
+            log(
+              chalk.yellow(
+                `   ⚠️  Warning: Could not copy ${source} to ${target}: ${error.message}`
+              )
+            );
+          }
+        });
+      }
 
       log(chalk.green("✅ Project initialized successfully!"));
     } catch (e) {
