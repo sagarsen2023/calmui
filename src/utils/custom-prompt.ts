@@ -1,5 +1,6 @@
 import readline from "readline";
 import chalk from "chalk";
+import firstLetterCapitalize from "./first-letter-capitalize";
 
 interface PromptOptions {
   message: string;
@@ -18,10 +19,14 @@ export function customPrompt({
       log(message);
       console.clear();
       choices.forEach((c, i) => {
+        const option = firstLetterCapitalize({
+          str: c,
+          separator: "-",
+        });
         if (i === selected) {
-          log(`> ${chalk.cyan(c)}`);
+          log(chalk.cyan(`> ${option}`));
         } else {
-          log(`  ${c}`);
+          log(`  ${option}`);
         }
       });
     };

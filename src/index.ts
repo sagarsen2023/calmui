@@ -1,36 +1,17 @@
 #!/usr/bin/env node
 import { Command } from "commander";
-import { execSync } from "child_process";
 import fs from "fs-extra";
 import path from "path";
-import { customPrompt } from "./utils/custom-prompt";
+import { initCommand } from "./config/initialize-project.config";
 
 const program = new Command();
 
 program
   .name("calmui")
-  .description("CLI to scaffold projects and generate modules")
+  .description("CLI to scaffold projects and generate modules for frontend")
   .version("1.0.0");
 
-program
-  .command("init [folder]")
-  .description(
-    "Initialize project in the specified folder (default: current folder)"
-  )
-  .action(async (folder?: string) => {
-    const choice = await customPrompt({
-      message: "Choose a template",
-      choices: ["Vite", "Next.js"],
-    });
-    const target = folder || ".";
-    if (choice === "Vite") {
-      execSync(`npm create vite@latest ${target} -- --template react`, {
-        stdio: "inherit",
-      });
-    } else {
-      execSync(`npx create-next-app@latest ${target}`, { stdio: "inherit" });
-    }
-  });
+program.addCommand(initCommand);
 
 program
   .command("generate <type> <name>")
