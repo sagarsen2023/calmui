@@ -6,7 +6,7 @@
     "calmui": "./bin/index.js"
   },
   "scripts": {
-    "copy-templates": "node --loader ts-node/esm src/scripts/copy-templates.ts",
+    "copy-templates": "node --no-warnings --loader ts-node/esm src/scripts/copy-templates.ts",
     "build": "tsc && tsc-esm-fix dist/**/*.js && npm run copy-templates",
     "local-install": "npm run build && npm link && npm i -g ."
   },

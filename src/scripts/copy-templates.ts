@@ -19,7 +19,7 @@ for (const template of templates) {
   // Ensure template directory exists
   const templateDir = path.join(distDir, template);
   fs.ensureDirSync(templateDir);
-  
+
   // Copy project files folder (keep the folder structure)
   const projectSrc = path.join(srcDir, template, "project-files");
   const projectDest = path.join(distDir, template, "project-files");
@@ -37,4 +37,4 @@ for (const template of templates) {
   }
 }
 
-console.log(chalk.greenBright("Templates copied and initiators compiled!"));
+console.log(chalk.greenBright("✓ Templates updated and all files compiled successfully!"));

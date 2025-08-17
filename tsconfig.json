@@ -7,9 +7,9 @@
     "rootDir": "src",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true, 
-    "allowArbitraryExtensions": true,
+    "skipLibCheck": true,
+    "allowArbitraryExtensions": true
   },
-  "include": ["src", "bin",],
-  "exclude": ["node_modules", "dist", "src/templates"]
+  "include": ["src", "bin"],
+  "exclude": ["node_modules", "dist", "src/templates/*/project-files"]
 }
