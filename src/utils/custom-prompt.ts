@@ -16,8 +16,8 @@ export function customPrompt({
     let selected = 0;
 
     const render = () => {
-      log(message);
       console.clear();
+      log(message);
       choices.forEach((c, i) => {
         const option = firstLetterCapitalize({
           str: c,

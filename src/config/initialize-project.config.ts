@@ -29,24 +29,29 @@ export const initCommand = new Command("init")
       log(chalk.greenBright(`Creating template: ${choice}`));
 
       const target = folder || ".";
-      const projectConfig = templateConfigs[choice].init(target);
+      const {
+        command,
+        postInstallCommands,
+        templateFiles,
+        finalizationCommands,
+      } = templateConfigs[choice].init(target);
 
       // Initialize the project
-      execSync(projectConfig.command, {
+      execSync(command, {
         stdio: "inherit",
       });
 
       // Running post-install commands
-      projectConfig.postInstallCommands?.forEach((cmd) => {
+      postInstallCommands?.forEach((cmd) => {
         execSync(cmd, {
           stdio: "inherit",
         });
       });
 
       // Copy template files if available
-      if (projectConfig.templateFiles) {
+      if (templateFiles) {
         log(chalk.blueBright("📂 Copying template files..."));
-        projectConfig.templateFiles.forEach(({ source, target }) => {
+        templateFiles.forEach(({ source, target }) => {
           try {
             const targetDir = path.dirname(target);
             fs.ensureDirSync(targetDir); // ? If directory is not there it gets created
@@ -61,6 +66,13 @@ export const initCommand = new Command("init")
           }
         });
       }
+
+      // ? Finalizing project setup
+      finalizationCommands?.forEach((cmd) => {
+        execSync(cmd, {
+          stdio: "inherit",
+        });
+      });
 
       log(chalk.green("✅ Project initialized successfully!"));
     } catch (e) {

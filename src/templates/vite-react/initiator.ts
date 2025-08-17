@@ -13,11 +13,6 @@ export const viteReactConfig = (folderName: string): ConfigOptions => {
       // Cleanup unnecessary files
       `rm -f ${folderName}/src/App.tsx`,
       `rm -f ${folderName}/src/App.css`,
-
-      `echo "✅ Vite React project with TanStack Router and Tailwind CSS setup complete using CalmUi!"`,
-      `git init`,
-      `git add .`,
-      `git commit -m "Initialized base project"`,
     ],
     templateFiles: [
       // ? Updating Files based on configuration and ready to development
@@ -79,6 +74,12 @@ export const viteReactConfig = (folderName: string): ConfigOptions => {
         source: `${templateDir}/src/utils/.gitkeep`,
         target: `${folderName}/src/utils/.gitkeep`,
       },
+    ],
+    finalizationCommands: [
+      `git init`,
+      `git add .`,
+      `git branch -M main`,
+      `git commit -m "Initialized base project"`,
     ],
   };
 };

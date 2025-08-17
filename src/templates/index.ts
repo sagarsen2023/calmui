@@ -15,6 +15,7 @@ export interface ConfigOptions {
     source: string;
     target: string;
   }[];
+  finalizationCommands?: string[];
 }
 
 export const templateConfigs: TemplateConfig = {
