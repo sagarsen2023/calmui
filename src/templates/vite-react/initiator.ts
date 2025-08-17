@@ -60,6 +60,10 @@ export const viteReactConfig = (folderName: string): ConfigOptions => {
         source: `${templateDir}/src/utils/cookie-storage.ts`,
         target: `${folderName}/src/utils/cookie-storage.ts`,
       },
+      {
+        source: `${templateDir}/src/utils/query-params-formatter.ts`,
+        target: `${folderName}/src/utils/query-params-formatter.ts`,
+      },
 
       // ? Initializing blank folders for consistent development
       {

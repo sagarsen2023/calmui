@@ -5,19 +5,24 @@ import textToCamelCase from "../../utils/text-to-camel-case";
 import firstLetterCapitalize from "../../utils/first-letter-capitalize";
 
 // Helper functions
-// 1. Helpers
+// ? Helpers
+// * Following code gives output as folder1/[folder2]/[folder3] if the route is "/folder1/:folder2/:folder3"
 function routeToFolder(route: string) {
   return route
     .split("/")
     .map((k) => (k.startsWith(":") ? `[${k.slice(1)}]` : k))
     .join(path.sep);
 }
+
+// * Following code gives output as $folder1/$folder2/$folder3 if the route is "/folder1/:folder2/:folder3"
 function routeToTanstackPath(route: string) {
   return route
     .split("/")
     .map((part) => (part.startsWith(":") ? `$${part.slice(1)}` : part))
     .join("/");
 }
+
+// * Following code gives output as the last static segment if the route is "/folder1/:folder2/:folder3"
 function lastStaticSegment(route: string) {
   const parts = route.split("/");
   let last = "";
@@ -27,6 +32,8 @@ function lastStaticSegment(route: string) {
   }
   return last;
 }
+
+// * Following code gives output as the parent static segments if the route is "/folder1/:folder2/:folder3"
 function staticParentPath(route: string) {
   const parts = route.split("/");
   let staticParts = [];
@@ -34,7 +41,7 @@ function staticParentPath(route: string) {
     if (part.startsWith(":")) break;
     if (part) staticParts.push(part);
   }
-  return staticParts.slice(0, -1).join(path.sep);
+  return staticParts.join("/");
 }
 
 export const viteRouteGenerator = (route: string) => {
@@ -68,27 +75,14 @@ function RouteComponent() {
   // Only if there IS a static segment (so NOT starting with ':')
   const lastStatic = lastStaticSegment(route);
   if (lastStatic) {
-    // Parent path (only static segments)
-    const serviceParent = staticParentPath(route);
-    const modelParent = staticParentPath(route);
-
-    const servicePath = path.join(
-      cwd,
-      "src",
-      "services",
-      serviceParent || lastStatic
-    );
+    const servicePath = path.join(cwd, "src", "services");
     fs.ensureDirSync(servicePath);
-    const gitkeepPath = path.join(servicePath, ".gitkeep");
-    if (fs.existsSync(gitkeepPath)) {
-      fs.removeSync(gitkeepPath);
-    }
     const newServicePath = `${servicePath}/${lastStatic}.service.${fileExtension}`;
     fs.ensureFileSync(newServicePath);
     fs.writeFileSync(
       newServicePath,
       `import queryParamsFormatter from "@/utils/query-params-formatter";
-import fetchAPI from "./config/fetchApi";
+import fetchAPI from "./config/fetch-api";
 
 export const ${textToCamelCase({
         str: lastStatic,
@@ -106,6 +100,10 @@ export const ${textToCamelCase({
 };
 `
     );
+
+    const modelParent = staticParentPath(route);
+
+    console.log("modelParent:", modelParent);
 
     if (fileExtension === "ts") {
       const modelPath = path.join(
