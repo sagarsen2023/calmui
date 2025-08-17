@@ -10,6 +10,7 @@ interface TemplateConfig {
 export interface ConfigOptions {
   name: string;
   command: string;
+  postInstallCommands: string[];
 }
 
 export const templateConfigs: TemplateConfig = {

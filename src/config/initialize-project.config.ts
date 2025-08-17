@@ -17,19 +17,31 @@ export const initCommand = new Command("init")
   )
   .showHelpAfterError()
   .action(async (folder?: string) => {
-    const choice = await customPrompt({
-      message: "Choose a template",
-      choices: getTemplates(),
-    });
-    log(chalk.greenBright(`Selected template: ${choice}`));
-    const target = folder || ".";
-    log(chalk.greenBright(`Selected folder: ${target}`));
-    log(chalk.magenta(templateConfigs[choice].init(target).command));
-
     try {
-      execSync(templateConfigs[choice].init(target).command, {
+      // Asking user to select template
+      // ? The templates will be automatically fetched from the templates directory
+      const choice = await customPrompt({
+        message: "Choose a template",
+        choices: getTemplates(),
+      });
+      log(chalk.greenBright(`Creating template: ${choice}`));
+
+      const target = folder || ".";
+      const projectConfig = templateConfigs[choice].init(target);
+
+      // Initialize the project
+      execSync(projectConfig.command, {
         stdio: "inherit",
       });
+
+      // Running post-install commands
+      projectConfig.postInstallCommands?.forEach((cmd) => {
+        log(chalk.blue(`Running: ${cmd}`));
+        execSync(cmd, {
+          stdio: "inherit",
+        });
+      });
+
       log(chalk.green("✅ Project initialized successfully!"));
     } catch (e) {
       const error = e as Error;
