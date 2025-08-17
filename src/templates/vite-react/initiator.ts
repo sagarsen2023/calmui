@@ -8,13 +8,17 @@ export const viteReactConfig = (folderName: string): ConfigOptions => {
     command: `npm create vite@latest ${folderName} -- --template react-ts`,
     postInstallCommands: [
       // Install dependencies
-      `cd ${folderName} && npm install tailwindcss postcss autoprefixer @tailwindcss/vite @tanstack/react-router @tanstack/router-plugin lucide-react -D @tanstack/router-devtools -D @vitejs/plugin-react-swc -D @types/node`,
+      `cd ${folderName} && npm install tailwindcss postcss autoprefixer @tailwindcss/vite @tanstack/react-router @tanstack/router-plugin lucide-react js-cookie -D @tanstack/router-devtools -D @vitejs/plugin-react-swc -D @types/node`,
 
       // Cleanup unnecessary files
       `rm -f ${folderName}/src/App.tsx`,
       `rm -f ${folderName}/src/App.css`,
     ],
     templateFiles: [
+      {
+        source: `${templateDir}/calmui.json`,
+        target: `${folderName}/calmui.json`,
+      },
       // ? Updating Files based on configuration and ready to development
       {
         source: `${templateDir}/vite.config.ts`,
@@ -44,6 +48,18 @@ export const viteReactConfig = (folderName: string): ConfigOptions => {
         source: `${templateDir}/src/routes/index.tsx`,
         target: `${folderName}/src/routes/index.tsx`,
       },
+      {
+        source: `${templateDir}/src/services/config/fetch-api.ts`,
+        target: `${folderName}/src/services/config/fetch-api.ts`,
+      },
+      {
+        source: `${templateDir}/src/services/config/query-urls.ts`,
+        target: `${folderName}/src/services/config/query-urls.ts`,
+      },
+      {
+        source: `${templateDir}/src/utils/cookie-storage.ts`,
+        target: `${folderName}/src/utils/cookie-storage.ts`,
+      },
 
       // ? Initializing blank folders for consistent development
       {
@@ -66,20 +82,12 @@ export const viteReactConfig = (folderName: string): ConfigOptions => {
         source: `${templateDir}/src/models/.gitkeep`,
         target: `${folderName}/src/models/.gitkeep`,
       },
-      {
-        source: `${templateDir}/src/services/.gitkeep`,
-        target: `${folderName}/src/services/.gitkeep`,
-      },
-      {
-        source: `${templateDir}/src/utils/.gitkeep`,
-        target: `${folderName}/src/utils/.gitkeep`,
-      },
     ],
     finalizationCommands: [
       `git init`,
-      `git add .`,
+      `git add . > /dev/null 2>&1`,
       `git branch -M main`,
-      `git commit -m "Initialized base project"`,
+      `git commit -m "Initialized base project" > /dev/null 2>&1`,
     ],
   };
 };
