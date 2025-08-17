@@ -136,7 +136,7 @@ import fetchAPI from "./config/fetch-api";
 
 export const ${textToCamelCase({
         str: lastStaticPath,
-        separator: "/",
+        separator: "-",
       })}Service = {
       // Example usage
       //   getDataFromApi: async (
@@ -167,7 +167,7 @@ export const ${textToCamelCase({
         newModelPath,
         `export interface ${firstLetterCapitalize({
           str: lastStaticPath,
-          separator: "/",
+          separator: "-",
         })}Model {
       // Define your model properties here
 }

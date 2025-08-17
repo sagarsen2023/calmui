@@ -1,7 +1,9 @@
 import { ConfigOptions } from "..";
+import os from "os";
 
 export const viteReactConfig = (folderName: string): ConfigOptions => {
   const templateDir = `${__dirname}/project-files`;
+  const isWindows = os.platform() === "win32";
 
   return {
     name: "Vite React",
@@ -9,10 +11,10 @@ export const viteReactConfig = (folderName: string): ConfigOptions => {
     postInstallCommands: [
       // Install dependencies
       `cd ${folderName} && npm i tailwindcss postcss autoprefixer @tailwindcss/vite @tanstack/react-router @tanstack/router-plugin lucide-react js-cookie`,
-      `cd ${folderName} && npm i -D @tanstack/router-devtools -D @vitejs/plugin-react-swc -D @types/node -D @types/js-cookie > /dev/null 2>&1`,
+      `cd ${folderName} && npm i -D @tanstack/router-devtools -D @vitejs/plugin-react-swc -D @types/node -D @types/js-cookie ${isWindows ? "> NUL 2>&1" : "> /dev/null 2>&1"}`,
       // Cleanup unnecessary files
-      `rm -f ${folderName}/src/App.tsx`,
-      `rm -f ${folderName}/src/App.css`,
+      isWindows ? `del /f ${folderName}\\src\\App.tsx` : `rm -f ${folderName}/src/App.tsx`,
+      isWindows ? `del /f ${folderName}\\src\\App.css` : `rm -f ${folderName}/src/App.css`,
     ],
     templateFiles: [
       {
@@ -93,9 +95,9 @@ export const viteReactConfig = (folderName: string): ConfigOptions => {
     ],
     finalizationCommands: [
       `git init`,
-      `git add . > /dev/null 2>&1`,
+      `git add . ${isWindows ? "> NUL 2>&1" : "> /dev/null 2>&1"}`,
       `git branch -M main`,
-      `git commit -m "Initialized base project" > /dev/null 2>&1`,
+      `git commit -m "Initialized base project" ${isWindows ? "> NUL 2>&1" : "> /dev/null 2>&1"}`,
     ],
   };
 };
