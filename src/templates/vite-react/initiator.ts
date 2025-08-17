@@ -8,8 +8,8 @@ export const viteReactConfig = (folderName: string): ConfigOptions => {
     command: `npm create vite@latest ${folderName} -- --template react-ts`,
     postInstallCommands: [
       // Install dependencies
-      `cd ${folderName} && npm install tailwindcss postcss autoprefixer @tailwindcss/vite @tanstack/react-router @tanstack/router-plugin lucide-react js-cookie -D @tanstack/router-devtools -D @vitejs/plugin-react-swc -D @types/node`,
-
+      `cd ${folderName} && npm i tailwindcss postcss autoprefixer @tailwindcss/vite @tanstack/react-router @tanstack/router-plugin lucide-react js-cookie`,
+      `cd ${folderName} && npm i -D @tanstack/router-devtools -D @vitejs/plugin-react-swc -D @types/node -D @types/js-cookie > /dev/null 2>&1`,
       // Cleanup unnecessary files
       `rm -f ${folderName}/src/App.tsx`,
       `rm -f ${folderName}/src/App.css`,
