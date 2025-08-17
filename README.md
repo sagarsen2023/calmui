@@ -2,7 +2,6 @@
 
 **CalmUI** is a powerful CLI tool for modern frontend development. It guarantees a clean, scalable, and opinionated project structure from day one, streamlining developer workflows and supporting long-term code quality.
 
----
 
 ## 🚀 Features & Benefits
 
@@ -14,7 +13,6 @@
 - **Edge case handling**: guards against accidental overwrites and misconfiguration.
 - **Easy extensibility**—add your own templates as your needs grow!
 
----
 
 ## 📦 Installation
 
@@ -26,7 +24,6 @@ npm install -g calmui
 
 _(Or use `npx calmui ...` for one-off commands without installation.)_
 
----
 
 ## 🛠 Project Initialization
 
@@ -50,7 +47,6 @@ During initialization, you’ll be prompted to select a framework:
 
 A local `calmui.json` will be created to store scaffolding config.
 
----
 
 ## ✨ Route/Module Generation
 
@@ -61,6 +57,8 @@ CalmUI lets you add new routes or modules with a single command, keeping your fo
 ```bash
 calmui generate-route /my-route
 ```
+
+After executing the command you'll see that folder specific files are created.
 
 **Generate a dynamic route:**
 
@@ -79,26 +77,12 @@ calmui generate-route /users/accounts/orders/:id/:status/update
 - Generates boilerplate, folder structure, and pre-wired modules for each part of the route.
 - Works seamlessly for both Vite and Next.js projects.
 
----
 
 ## 🧩 Other Commands (Coming Soon)
 
-- CRUD module generation
-- Route migration and child route utilities
-- Custom module templating
+- Route migration
 
----
 
-## ⚡ Edge Cases & Safeguards
-
-- **Current directory checks:**  
-  If initializing in `.` and the folder is not empty, CalmUI prompts you to confirm or clean up first.
-- **Framework detection:**  
-  Prevents accidental double-init and confusable project states (e.g., both `vite.config` and `next.config.js`).
-- **Custom scripts:**  
-  Easily convert all `.ts` files to `.js` if needed for ESM builds.
-
----
 
 ## 📝 Recommended Project Workflow
 
@@ -107,20 +91,17 @@ calmui generate-route /users/accounts/orders/:id/:status/update
 3. Use `calmui generate-route` as needed to build out your app—no more worrying about folder or page naming.
 4. Let CalmUI handle your scaffolds, configs, and structure—focus on real features.
 
----
 
 ## 💡 Contributing
 
 Want to add framework support, templating logic, or new generators? PRs are welcome! See the [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
----
 
 ## 🖥 Compatibility
 
 - Node.js v18+
 - Works on macOS, Linux, and Windows
 
----
 
 ## ❓ FAQ
 
