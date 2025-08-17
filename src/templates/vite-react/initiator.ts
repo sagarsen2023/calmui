@@ -6,7 +6,7 @@ export const viteReactConfig = (folderName: string): ConfigOptions => {
     command: `npm create vite@latest ${folderName} -- --template react`,
     postInstallCommands: [
       `cd ${folderName}`,
-      "npm install tailwindcss @tailwindcss/vite @tanstack/react-router -D @tanstack/router-plugin",
+      "npm install tailwindcss @tailwindcss/vite @tanstack/react-router lucide-react -D @tanstack/router-plugin",
     ],
   };
 };
