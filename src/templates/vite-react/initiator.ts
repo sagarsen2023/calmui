@@ -41,6 +41,10 @@ export const viteReactConfig = (folderName: string): ConfigOptions => {
         target: `${folderName}/src/index.css`,
       },
       {
+        source: `${templateDir}/src/modules/home/index.tsx`,
+        target: `${folderName}/src/modules/home/index.tsx`,
+      },
+      {
         source: `${templateDir}/src/routes/__root.tsx`,
         target: `${folderName}/src/routes/__root.tsx`,
       },

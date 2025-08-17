@@ -4,8 +4,7 @@ import { getCalmUiJson } from "../../lib/get-calmui-json";
 import textToCamelCase from "../../utils/text-to-camel-case";
 import firstLetterCapitalize from "../../utils/first-letter-capitalize";
 
-// Helper functions
-// ? Helpers
+// ? Helpers only for route generation with vite and tanstack
 // * Following code gives output as folder1/[folder2]/[folder3] if the route is "/folder1/:folder2/:folder3"
 function routeToFolder(route: string) {
   return route
@@ -14,7 +13,11 @@ function routeToFolder(route: string) {
     .join(path.sep);
 }
 
-// * Following code gives output as $folder1/$folder2/$folder3 if the route is "/folder1/:folder2/:folder3"
+/**
+ * Converts a route string to the TanStack Router format by replacing dynamic segments with the "$" prefix.
+ * @param route - The route pattern (e.g., "/folder1/:folder2/:folder3")
+ * @returns The TanStack Router format (e.g., "/folder1/$folder2/$folder3")
+ */
 function routeToTanstackPath(route: string) {
   return route
     .split("/")
@@ -22,7 +25,12 @@ function routeToTanstackPath(route: string) {
     .join("/");
 }
 
-// * Following code gives output as the last static segment if the route is "/folder1/:folder2/:folder3"
+/**
+ * Extracts the last static segment from a route string.
+ *
+ * @param route - The route pattern (e.g., "/folder1/:folder2/:folder3")
+ * @returns The last static segment (e.g., "folder3")
+ */
 function lastStaticSegment(route: string) {
   const parts = route.split("/");
   let last = "";
@@ -33,7 +41,12 @@ function lastStaticSegment(route: string) {
   return last;
 }
 
-// * Following code gives output as the parent static segments if the route is "/folder1/:folder2/:folder3"
+/**
+ * Extracts the parent static segments from a route string.
+ *
+ * @param route - The route pattern (e.g., "/folder1/:folder2/:folder3")
+ * @returns The parent static segments joined by "/" (e.g., "folder1")
+ */
 function staticParentPath(route: string) {
   const parts = route.split("/");
   let staticParts = [];
@@ -44,16 +57,23 @@ function staticParentPath(route: string) {
   return staticParts.join("/");
 }
 
+/**
+ * Generates the Vite-Tanstack route files for a given route pattern.
+ *
+ * @param route - The route pattern (e.g., "/folder1/folder2" or even dynamic routes like: "/folder1/:folder2/:folder3")
+ * @returns {void}
+ */
 export const viteRouteGenerator = (route: string) => {
   const cwd = process.cwd();
   const { fileExtension } = getCalmUiJson();
 
-  const routeFolder = routeToFolder(route);
-  // Get tanstack router relative path:
+  // Formatting paths for a better project structure
   const tanstackPath = routeToTanstackPath(route);
+  const parentPath = staticParentPath(route);
+  const lastStaticPath = lastStaticSegment(route);
 
-  // Step 1: Create route file
-  const routePath = path.join(cwd, "src", "routes", routeFolder);
+  // ---------- GENERATING ROUTES ----------
+  const routePath = path.join(cwd, "src", "routes", tanstackPath);
   fs.ensureDirSync(routePath);
   const newRoutePath = `${routePath}/index.${fileExtension}x`;
   fs.ensureFileSync(newRoutePath);
@@ -71,13 +91,37 @@ function RouteComponent() {
 `
   );
 
-  // Step 2: Model/Service files generation for last static segment
-  // Only if there IS a static segment (so NOT starting with ':')
-  const lastStatic = lastStaticSegment(route);
-  if (lastStatic) {
+  // ---------- GENERATING MODULES FOR USING IN PAGES ----------
+  const modulePath = path.join(
+    cwd,
+    "src",
+    "modules",
+    parentPath,
+    lastStaticPath !== parentPath ? lastStaticPath : ""
+  );
+  fs.ensureDirSync(modulePath);
+  const newModulePath = `${modulePath}/index.${fileExtension}x`;
+  fs.ensureFileSync(newModulePath);
+  const moduleName = firstLetterCapitalize({
+    str: lastStaticPath,
+    separator: "/",
+  });
+  fs.writeFileSync(
+    newModulePath,
+    `function ${moduleName}() {
+  return <div>${moduleName}</div>;
+}
+
+export default ${moduleName};
+`
+  );
+
+  // ---------- GENERATING SERVICE FILE ----------
+
+  if (lastStaticPath) {
     const servicePath = path.join(cwd, "src", "services");
     fs.ensureDirSync(servicePath);
-    const newServicePath = `${servicePath}/${lastStatic}.service.${fileExtension}`;
+    const newServicePath = `${servicePath}/${lastStaticPath}.service.${fileExtension}`;
     fs.ensureFileSync(newServicePath);
     fs.writeFileSync(
       newServicePath,
@@ -85,7 +129,7 @@ function RouteComponent() {
 import fetchAPI from "./config/fetch-api";
 
 export const ${textToCamelCase({
-        str: lastStatic,
+        str: lastStaticPath,
         separator: "/",
       })}Service = {
       // Example usage
@@ -101,16 +145,13 @@ export const ${textToCamelCase({
 `
     );
 
-    const modelParent = staticParentPath(route);
-
-    console.log("modelParent:", modelParent);
-
+    // ---------- GENERATING TYPESCRIPT INTERFACES ----------
     if (fileExtension === "ts") {
       const modelPath = path.join(
         cwd,
         "src",
         "models",
-        modelParent || lastStatic
+        parentPath || lastStaticPath
       );
       fs.ensureDirSync(modelPath);
       const newModelPath = `${modelPath}/index.model.${fileExtension}`;
@@ -118,7 +159,7 @@ export const ${textToCamelCase({
       fs.writeFileSync(
         newModelPath,
         `export interface ${firstLetterCapitalize({
-          str: lastStatic,
+          str: lastStaticPath,
           separator: "/",
         })}Model {
       // Define your model properties here
