@@ -153,13 +153,16 @@ export const ${textToCamelCase({
     log(`✓ Generated service file: ${newServicePath}`);
 
     // ---------- GENERATING TYPESCRIPT INTERFACES ----------
+    const moduleFolderRoute = path.join(cwd, "src", "models");
     if (fileExtension === "ts") {
       const modelPath = path.join(
-        cwd,
-        "src",
-        "models",
+        moduleFolderRoute,
         parentPath || lastStaticPath
       );
+      const gitkeepPathForModel = path.join(moduleFolderRoute, ".gitkeep");
+      if (fs.existsSync(gitkeepPathForModel)) {
+        fs.removeSync(gitkeepPathForModel);
+      }
       fs.ensureDirSync(modelPath);
       const newModelPath = `${modelPath}/index.model.${fileExtension}`;
       fs.ensureFileSync(newModelPath);
