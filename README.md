@@ -5,7 +5,6 @@
 ### Why??
 
 Ever spent half an hour in a group call debating if it should be `components` or `Components`, `home` or `HomePage`, only to discover three different folder structures by the end of sprint?  
-Or maybe you inherited a Next.js repo where `pages/api` contains a surprise slice reducer, and every new feature means copy-pasting boilerplate from a colleague’s old branch (and hoping you didn’t miss a config file)?
 
 **CalmUI ends the chaos.**  
 With project structure, templates, and module files handled for you, you can finally spend less time renaming folders—and more time shipping code.

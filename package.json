@@ -1,5 +1,6 @@
 {
   "name": "calmui",
+  "description": "A CLI tool for generating and managing a consistent project structure for frontend applications.",
   "version": "1.0.0",
   "type": "module",
   "bin": {
@@ -13,7 +14,6 @@
   "keywords": [],
   "author": "Sagar Sen",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "chalk": "^5.5.0",
     "commander": "^14.0.0",
