@@ -116,4 +116,3 @@ If you face any kind of problem, unexpected behavior please create an issue. We 
 ## Credit
 
 - [Rajdip Mondal](https://github.com/RajdipM) For the initial inspiration.
-- For frontend developers who've spent more time debating folder names and wrestling with config files than actually writing business logic.

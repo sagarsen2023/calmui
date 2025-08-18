@@ -1,19 +1,39 @@
 {
   "name": "calmui",
   "description": "A CLI tool for generating and managing a consistent project structure for frontend applications.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "bin": {
-    "calmui": "./bin/index.js"
+    "calmui": "bin/index.js"
   },
   "scripts": {
     "copy-templates": "node --no-warnings --loader ts-node/esm src/scripts/copy-templates.ts",
     "build": "tsc && tsc-esm-fix dist/**/*.js && npm run copy-templates",
-    "local-install": "npm run build && npm link && npm i -g ."
+    "local-install": "npm run build && npm link && npm i -g .",
+    "prepublishOnly": "npm run build"
   },
-  "keywords": [],
-  "author": "Sagar Sen",
-  "license": "ISC",
+  "keywords": [
+    "cli",
+    "frontend",
+    "project-structure",
+    "scaffolding",
+    "react",
+    "nextjs",
+    "vite",
+    "typescript",
+    "framework",
+    "boilerplate"
+  ],
+  "author": "Sagar Sen <sagarsen.dev@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/sagarsen2023/calmui#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sagarsen2023/calmui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sagarsen2023/calmui/issues"
+  },
   "dependencies": {
     "chalk": "^5.5.0",
     "commander": "^14.0.0",
