@@ -7,7 +7,7 @@ export const nextJsConfig = (folderName: string): ConfigOptions => {
 
   return {
     name: "Next Js",
-    command: `npx create-next-app@latest ${folderName} --typescript --app --no-git`,
+    command: `npx create-next-app@latest ${folderName} --typescript --app --src-dir --no-import-alias`,
     postInstallCommands: [],
     templateFiles: [
       {

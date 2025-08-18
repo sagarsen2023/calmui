@@ -1,4 +1,5 @@
 import { nextJsConfig } from "./next-js/initiator";
+import { nextRouteGenerator } from "./next-js/route-generator";
 import { viteReactConfig } from "./vite-react/initiator";
 import { viteRouteGenerator } from "./vite-react/route-generator";
 
@@ -17,8 +18,7 @@ interface TemplateConfig {
   [key: string]: {
     init: (folderName: string) => ConfigOptions;
     generateRoute?: (route: string) => void;
-    generateCrudRoute?: (route: string) => void;
-    migrateRoute?: (options: { from: string; to: string }) => void;
+    // migrateRoute?: (options: { from: string; to: string }) => void; // ? Coming Soon
   };
 }
 
@@ -29,5 +29,6 @@ export const templateConfigs: TemplateConfig = {
   },
   "next-js": {
     init: (folderName: string) => nextJsConfig(folderName),
+    generateRoute: nextRouteGenerator,
   },
 };

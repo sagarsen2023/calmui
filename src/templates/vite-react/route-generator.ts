@@ -8,13 +8,6 @@ import chalk from "chalk";
 const log = (text: string) => console.log(chalk.greenBright(text));
 
 // ? Helpers only for route generation with vite and tanstack
-// * Following code gives output as folder1/[folder2]/[folder3] if the route is "/folder1/:folder2/:folder3"
-function routeToFolder(route: string) {
-  return route
-    .split("/")
-    .map((k) => (k.startsWith(":") ? `[${k.slice(1)}]` : k))
-    .join(path.sep);
-}
 
 /**
  * Converts a route string to the TanStack Router format by replacing dynamic segments with the "$" prefix.
@@ -101,7 +94,7 @@ function RouteComponent() {
     "src",
     "modules",
     parentPath,
-    lastStaticPath !== parentPath ? lastStaticPath : ""
+    lastStaticPath !== parentPath ? lastStaticPath : "" // ? If route is: /user/:id/:orders/create then the complete route will be /user/create
   );
   fs.ensureDirSync(modulePath);
   const newModulePath = `${modulePath}/index.${fileExtension}x`;
@@ -109,7 +102,7 @@ function RouteComponent() {
   const moduleName =
     firstLetterCapitalize({
       str: lastStaticPath,
-      separator: "/",
+      separator: "-",
     }) + "Module";
   fs.writeFileSync(
     newModulePath,
