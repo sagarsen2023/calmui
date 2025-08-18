@@ -2,14 +2,13 @@ import fs from "fs-extra";
 import path from "path";
 import { getCalmUiJson } from "../../lib/get-calmui-json";
 import textToCamelCase from "../../utils/text-to-camel-case";
-import firstLetterCapitalize from "../../utils/first-letter-capitalize";
 import chalk from "chalk";
+import { upperCamelCase } from "../../utils/text-to-upper-camel-case";
 
 const successLog = (text: string) => console.log(chalk.greenBright(text));
 const infoLog = (text: string) => console.log(chalk.blueBright(text));
 
 const cwd = process.cwd();
-const { fileExtension } = getCalmUiJson();
 
 // ? Helpers only for route generation with Next JS
 /**
@@ -58,14 +57,19 @@ function staticParentPath(route: string) {
 
 // -------------------- FUNCTIONS --------------------
 // 1. Route generation
-
 /**
  * Generates the Next JS route files for a given route pattern.
  *
  * @param route - The route pattern (e.g., "/folder1/folder2" or even dynamic routes like: "/folder1/:folder2/:folder3")
  * @returns {void}
  */
-const generateRoute = (route: string) => {
+const generateRoute = ({
+  route,
+  fileExtension,
+}: {
+  route: string;
+  fileExtension: string;
+}) => {
   const nextJsPath = routeToNextJsPath(route);
   const routePath = path.join(cwd, "src", "app", nextJsPath);
   fs.ensureDirSync(routePath);
@@ -93,15 +97,17 @@ export default Page;
 // 2. Generate Modules
 /**
  * Generates a module file for a given route.
- * @param param0.parentPath - The parent path of the module.
- * @param param0.lastStaticPath - The last static path of the module.
+ * @param parentPath - The parent path of the module.
+ * @param lastStaticPath - The last static path of the module.
  */
 const generateModule = ({
   parentPath,
   lastStaticPath,
+  fileExtension,
 }: {
   parentPath: string;
   lastStaticPath: string;
+  fileExtension: string;
 }) => {
   const modulePath = path.join(
     cwd,
@@ -110,14 +116,13 @@ const generateModule = ({
     parentPath,
     parentPath.endsWith(lastStaticPath) ? "" : lastStaticPath // ? If route is: /user/:id/:orders/create then the complete route will be /user/create
   );
-  console.log("modulePath:", modulePath);
   fs.ensureDirSync(modulePath);
   const newModulePath = `${modulePath}/index.${fileExtension}x`;
   const isModuleExists = fs.existsSync(newModulePath);
   if (!isModuleExists) {
     fs.ensureFileSync(newModulePath);
     const moduleName =
-      firstLetterCapitalize({
+      upperCamelCase({
         str: lastStaticPath,
         separator: "-",
       }) + "Module";
@@ -141,7 +146,13 @@ export default ${moduleName};
  * Generates a service file for a given route.
  * @param lastStaticPath - The last static path of the service.
  */
-const generateService = (lastStaticPath: string) => {
+const generateService = ({
+  lastStaticPath,
+  fileExtension,
+}: {
+  lastStaticPath: string;
+  fileExtension: string;
+}) => {
   const servicePath = path.join(cwd, "src", "services");
   fs.ensureDirSync(servicePath);
   const newServicePath = `${servicePath}/${lastStaticPath}.service.${fileExtension}`;
@@ -175,12 +186,22 @@ export const ${textToCamelCase({
   }
 };
 
+// 4. Generate Typescript Model
+/**
+ * Generates a typescript model file for a given route.
+ * @param parentPath - The parent path of the model.
+ * @param lastStaticPath - The last static path of the model.
+ * @param fileExtension - The file extension for the model file.
+ * @returns {void}
+ */
 const generateTypescriptModel = ({
   parentPath,
   lastStaticPath,
+  fileExtension,
 }: {
   parentPath: string;
   lastStaticPath: string;
+  fileExtension: string;
 }) => {
   if (fileExtension !== "ts") {
     return;
@@ -198,11 +219,11 @@ const generateTypescriptModel = ({
     fs.ensureFileSync(newModelPath);
     fs.writeFileSync(
       newModelPath,
-      `export interface ${firstLetterCapitalize({
+      `export interface ${upperCamelCase({
         str: lastStaticPath,
         separator: "-",
       })}Model {
-      // Define your model properties here
+  // Define your model properties here
 }
 `
     );
@@ -218,26 +239,28 @@ const generateTypescriptModel = ({
  * @param route - The route pattern (e.g., "/folder1/folder2" or even dynamic routes like: "/folder1/:folder2/:folder3")
  * @returns {void}
  */
-export const nextRouteGenerator = (route: string) => {
+export const nextRouteGenerator = (enteredRoute: string) => {
+  const route = enteredRoute.toLowerCase();
   const parentPath = staticParentPath(route);
   const lastStaticPath = lastStaticSegment(route);
+  const { fileExtension } = getCalmUiJson();
 
   // ---------- GENERATING ROUTE FILE ----------
-  generateRoute(route);
+  generateRoute({ route, fileExtension });
 
   // ---------- GENERATING MODULE FILE ----------
   generateModule({
     lastStaticPath,
     parentPath,
+    fileExtension,
   });
 
-  if (lastStaticPath) {
-    // ---------- GENERATING SERVICE FILE ----------
-    generateService(lastStaticPath);
-    // ---------- GENERATING TYPESCRIPT INTERFACES ----------
-    generateTypescriptModel({
-      lastStaticPath,
-      parentPath,
-    });
-  }
+  // ---------- GENERATING SERVICE FILE ----------
+  generateService({ lastStaticPath, fileExtension });
+  // ---------- GENERATING TYPESCRIPT INTERFACES ----------
+  generateTypescriptModel({
+    lastStaticPath,
+    parentPath,
+    fileExtension,
+  });
 };

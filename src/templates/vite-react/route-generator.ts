@@ -2,10 +2,13 @@ import fs from "fs-extra";
 import path from "path";
 import { getCalmUiJson } from "../../lib/get-calmui-json";
 import textToCamelCase from "../../utils/text-to-camel-case";
-import firstLetterCapitalize from "../../utils/first-letter-capitalize";
 import chalk from "chalk";
+import { upperCamelCase } from "../../utils/text-to-upper-camel-case";
 
-const log = (text: string) => console.log(chalk.greenBright(text));
+const successLog = (text: string) => console.log(chalk.greenBright(text));
+const infoLog = (text: string) => console.log(chalk.blueBright(text));
+
+const cwd = process.cwd();
 
 // ? Helpers only for route generation with vite and tanstack
 
@@ -53,29 +56,31 @@ function staticParentPath(route: string) {
   return staticParts.join("/");
 }
 
+// -------------------- FUNCTIONS --------------------
+// 1. Route generation
 /**
- * Generates the Vite-Tanstack route files for a given route pattern.
+ * Generates the tanstack route files for a given route pattern.
  *
  * @param route - The route pattern (e.g., "/folder1/folder2" or even dynamic routes like: "/folder1/:folder2/:folder3")
  * @returns {void}
  */
-export const viteRouteGenerator = (route: string) => {
-  const cwd = process.cwd();
-  const { fileExtension } = getCalmUiJson();
-
-  // Formatting paths for a better project structure
+const generateRoute = ({
+  route,
+  fileExtension,
+}: {
+  route: string;
+  fileExtension: string;
+}) => {
   const tanstackPath = routeToTanstackPath(route);
-  const parentPath = staticParentPath(route);
-  const lastStaticPath = lastStaticSegment(route);
-
-  // ---------- GENERATING ROUTES ----------
   const routePath = path.join(cwd, "src", "routes", tanstackPath);
   fs.ensureDirSync(routePath);
   const newRoutePath = `${routePath}/index.${fileExtension}x`;
-  fs.ensureFileSync(newRoutePath);
-  fs.writeFileSync(
-    newRoutePath,
-    `import { createFileRoute } from '@tanstack/react-router'
+  const isRouteExists = fs.existsSync(newRoutePath);
+  if (!isRouteExists) {
+    fs.ensureFileSync(newRoutePath);
+    fs.writeFileSync(
+      newRoutePath,
+      `import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('${tanstackPath}')({
   component: RouteComponent,
@@ -85,42 +90,77 @@ function RouteComponent() {
   return <div>Hello "${route}"!</div>
 }
 `
-  );
-  log(`✓ Generated route file: ${newRoutePath}`);
+    );
+    successLog(`✓ Generated route file: ${newRoutePath}`);
+  } else {
+    infoLog("! Skipping route file because it already exists");
+  }
+};
 
-  // ---------- GENERATING MODULES FOR USING IN PAGES ----------
+// 2. Generate Modules
+/**
+ * Generates a module file for a given route.
+ * @param param0.parentPath - The parent path of the module.
+ * @param param0.lastStaticPath - The last static path of the module.
+ */
+const generateModule = ({
+  parentPath,
+  lastStaticPath,
+  fileExtension,
+}: {
+  parentPath: string;
+  lastStaticPath: string;
+  fileExtension: string;
+}) => {
   const modulePath = path.join(
     cwd,
     "src",
     "modules",
     parentPath,
-    lastStaticPath !== parentPath ? lastStaticPath : "" // ? If route is: /user/:id/:orders/create then the complete route will be /user/create
+    parentPath.endsWith(lastStaticPath) ? "" : lastStaticPath // ? If route is: /user/:id/:orders/create then the complete route will be /user/create
   );
   fs.ensureDirSync(modulePath);
   const newModulePath = `${modulePath}/index.${fileExtension}x`;
-  fs.ensureFileSync(newModulePath);
-  const moduleName =
-    firstLetterCapitalize({
-      str: lastStaticPath,
-      separator: "-",
-    }) + "Module";
-  fs.writeFileSync(
-    newModulePath,
-    `function ${moduleName}() {
+  const isModuleExists = fs.existsSync(newModulePath);
+  if (!isModuleExists) {
+    fs.ensureFileSync(newModulePath);
+    const moduleName =
+      upperCamelCase({
+        str: lastStaticPath,
+        separator: "-",
+      }) + "Module";
+    fs.writeFileSync(
+      newModulePath,
+      `function ${moduleName}() {
   return <div>${moduleName}</div>;
 }
 
 export default ${moduleName};
 `
-  );
-  log(`✓ Generated module file: ${newModulePath}`);
+    );
+    successLog(`✓ Generated module file: ${newModulePath}`);
+  } else {
+    infoLog("! Skipping module file because it already exists");
+  }
+};
 
-  // ---------- GENERATING SERVICE FILE ----------
-
-  if (lastStaticPath) {
-    const servicePath = path.join(cwd, "src", "services");
-    fs.ensureDirSync(servicePath);
-    const newServicePath = `${servicePath}/${lastStaticPath}.service.${fileExtension}`;
+// 3. Generate Service
+/**
+ * Generates a service file for a given route.
+ * @param lastStaticPath - The last static path of the service.
+ */
+const generateService = ({
+  lastStaticPath,
+  fileExtension,
+}: {
+  lastStaticPath: string;
+  fileExtension: string;
+}) => {
+  const servicePath = path.join(cwd, "src", "services");
+  fs.ensureDirSync(servicePath);
+  const newServicePath = `${servicePath}/${lastStaticPath}.service.${fileExtension}`;
+  const isServiceExists = fs.existsSync(newServicePath);
+  if (!isServiceExists) {
     fs.ensureFileSync(newServicePath);
     fs.writeFileSync(
       newServicePath,
@@ -137,39 +177,93 @@ export const ${textToCamelCase({
       //   ): Promise<SampleResponseType> => {
       //     const queryString = queryParamsFormatter(params);
       //     return fetchAPI.get<SampleResponseType>({
-      //       endpoint: \`/${route}?\${queryString}\`,
+      //       endpoint: \`/\${some-route}?\${queryString}\`,
       //     });
       //   },
 };
 `
     );
-    log(`✓ Generated service file: ${newServicePath}`);
+    successLog(`✓ Generated service file: ${newServicePath}`);
+  } else {
+    infoLog("! Skipping service file because it already exists");
+  }
+};
 
-    // ---------- GENERATING TYPESCRIPT INTERFACES ----------
-    const moduleFolderRoute = path.join(cwd, "src", "models");
-    if (fileExtension === "ts") {
-      const modelPath = path.join(
-        moduleFolderRoute,
-        parentPath || lastStaticPath
-      );
-      const gitkeepPathForModel = path.join(moduleFolderRoute, ".gitkeep");
-      if (fs.existsSync(gitkeepPathForModel)) {
-        fs.removeSync(gitkeepPathForModel);
-      }
-      fs.ensureDirSync(modelPath);
-      const newModelPath = `${modelPath}/index.model.${fileExtension}`;
-      fs.ensureFileSync(newModelPath);
-      fs.writeFileSync(
-        newModelPath,
-        `export interface ${firstLetterCapitalize({
-          str: lastStaticPath,
-          separator: "-",
-        })}Model {
-      // Define your model properties here
+// 4. Generate Typescript Model
+/**
+ * Generates a typescript model file for a given route.
+ * @param parentPath - The parent path of the model.
+ * @param lastStaticPath - The last static path of the model.
+ * @param fileExtension - The file extension for the model file.
+ * @returns {void}
+ */
+const generateTypescriptModel = ({
+  parentPath,
+  lastStaticPath,
+  fileExtension,
+}: {
+  parentPath: string;
+  lastStaticPath: string;
+  fileExtension: string;
+}) => {
+  if (fileExtension !== "ts") {
+    return;
+  }
+  const moduleFolderRoute = path.join(cwd, "src", "models");
+  const modelPath = path.join(moduleFolderRoute, parentPath || lastStaticPath);
+  const gitkeepPathForModel = path.join(moduleFolderRoute, ".gitkeep");
+  if (fs.existsSync(gitkeepPathForModel)) {
+    fs.removeSync(gitkeepPathForModel);
+  }
+  fs.ensureDirSync(modelPath);
+  const newModelPath = `${modelPath}/index.model.${fileExtension}`;
+  const isModelExists = fs.existsSync(newModelPath);
+  if (!isModelExists) {
+    fs.ensureFileSync(newModelPath);
+    fs.writeFileSync(
+      newModelPath,
+      `export interface ${upperCamelCase({
+        str: lastStaticPath,
+        separator: "-",
+      })}Model {
+  // Define your model properties here
 }
 `
-      );
-      log(`✓ Generated typescript model file: ${newModelPath}`);
-    }
+    );
+    successLog(`✓ Generated typescript model file: ${newModelPath}`);
+  } else {
+    infoLog("! Skipping typescript model file because it already exists");
   }
+};
+
+/**
+ * Generates the Vite-Tanstack route files for a given route pattern.
+ *
+ * @param route - The route pattern (e.g., "/folder1/folder2" or even dynamic routes like: "/folder1/:folder2/:folder3")
+ * @returns {void}
+ */
+export const viteRouteGenerator = (route: string) => {
+  const { fileExtension } = getCalmUiJson();
+
+  const parentPath = staticParentPath(route);
+  const lastStaticPath = lastStaticSegment(route);
+
+  // ---------- GENERATING ROUTES ----------
+  generateRoute({
+    route,
+    fileExtension,
+  });
+
+  // ---------- GENERATING MODULES FOR USING IN PAGES ----------
+  generateModule({
+    fileExtension,
+    lastStaticPath,
+    parentPath,
+  });
+
+  // ---------- GENERATING SERVICE FILE ----------
+  generateService({ fileExtension, lastStaticPath });
+
+  // ---------- GENERATING TYPESCRIPT INTERFACES ----------
+  generateTypescriptModel({ fileExtension, lastStaticPath, parentPath });
 };
