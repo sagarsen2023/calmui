@@ -1,0 +1,5 @@
+{
+  "calmui": "1.0.0",
+  "template": "next-js",
+  "typescript": true
+}

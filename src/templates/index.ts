@@ -5,7 +5,7 @@ import { viteRouteGenerator } from "./vite-react/route-generator";
 export interface ConfigOptions {
   name: string;
   command: string;
-  postInstallCommands: string[];
+  postInstallCommands?: string[];
   templateFiles?: {
     source: string;
     target: string;

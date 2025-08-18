@@ -54,8 +54,8 @@ export const initCommand = new Command("init")
         templateFiles.forEach(({ source, target }) => {
           try {
             const targetDir = path.dirname(target);
-            fs.ensureDirSync(targetDir); // ? If directory is not there it gets created
-            fs.copyFileSync(source, target); // ? Copying project files
+            fs.ensureDirSync(targetDir);
+            fs.copyFileSync(source, target);
             log(chalk.greenBright(`   ✓ ${target}`));
           } catch (error: any) {
             log(
