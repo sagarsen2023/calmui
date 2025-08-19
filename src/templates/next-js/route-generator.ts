@@ -186,15 +186,15 @@ export const ${textToCamelCase({
   }
 };
 
-// 4. Generate Typescript Model
+// 4. Generate Typescript Type
 /**
- * Generates a typescript model file for a given route.
- * @param parentPath - The parent path of the model.
- * @param lastStaticPath - The last static path of the model.
- * @param fileExtension - The file extension for the model file.
+ * Generates a typescript type file for a given route.
+ * @param parentPath - The parent path of the type.
+ * @param lastStaticPath - The last static path of the type.
+ * @param fileExtension - The file extension for the type file.
  * @returns {void}
  */
-const generateTypescriptModel = ({
+const generateTypescriptType = ({
   parentPath,
   lastStaticPath,
   fileExtension,
@@ -206,30 +206,30 @@ const generateTypescriptModel = ({
   if (fileExtension !== "ts") {
     return;
   }
-  const moduleFolderRoute = path.join(cwd, "src", "models");
-  const modelPath = path.join(moduleFolderRoute, parentPath || lastStaticPath);
-  const gitkeepPathForModel = path.join(moduleFolderRoute, ".gitkeep");
-  if (fs.existsSync(gitkeepPathForModel)) {
-    fs.removeSync(gitkeepPathForModel);
+  const typeFolderRoute = path.join(cwd, "src", "types");
+  const typePath = path.join(typeFolderRoute, parentPath || lastStaticPath);
+  const gitkeepPathForType = path.join(typeFolderRoute, ".gitkeep");
+  if (fs.existsSync(gitkeepPathForType)) {
+    fs.removeSync(gitkeepPathForType);
   }
-  fs.ensureDirSync(modelPath);
-  const newModelPath = `${modelPath}/index.model.${fileExtension}`;
-  const isModelExists = fs.existsSync(newModelPath);
-  if (!isModelExists) {
-    fs.ensureFileSync(newModelPath);
+  fs.ensureDirSync(typePath);
+  const newTypePath = `${typePath}/index.type.${fileExtension}`;
+  const isTypeExists = fs.existsSync(newTypePath);
+  if (!isTypeExists) {
+    fs.ensureFileSync(newTypePath);
     fs.writeFileSync(
-      newModelPath,
+      newTypePath,
       `export interface ${upperCamelCase({
         str: lastStaticPath,
         separator: "-",
-      })}Model {
-  // Define your model properties here
+      })}Type {
+  // Define your type properties here
 }
 `
     );
-    successLog(`✓ Generated typescript model file: ${newModelPath}`);
+    successLog(`✓ Generated typescript type file: ${newTypePath}`);
   } else {
-    infoLog("! Skipping typescript model file because it already exists");
+    infoLog("! Skipping typescript type file because it already exists");
   }
 };
 
@@ -258,7 +258,7 @@ export const nextRouteGenerator = (enteredRoute: string) => {
   // ---------- GENERATING SERVICE FILE ----------
   generateService({ lastStaticPath, fileExtension });
   // ---------- GENERATING TYPESCRIPT INTERFACES ----------
-  generateTypescriptModel({
+  generateTypescriptType({
     lastStaticPath,
     parentPath,
     fileExtension,

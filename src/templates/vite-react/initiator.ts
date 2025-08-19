@@ -89,8 +89,8 @@ export const viteReactConfig = (folderName: string): ConfigOptions => {
         target: `${folderName}/src/lib/.gitkeep`,
       },
       {
-        source: `${templateDir}/src/models/.gitkeep`,
-        target: `${folderName}/src/models/.gitkeep`,
+        source: `${templateDir}/src/types/.gitkeep`,
+        target: `${folderName}/src/types/.gitkeep`,
       },
     ],
     finalizationCommands: [
