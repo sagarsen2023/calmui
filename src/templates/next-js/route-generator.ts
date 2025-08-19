@@ -4,56 +4,14 @@ import { getCalmUiJson } from "../../lib/get-calmui-json";
 import textToCamelCase from "../../utils/text-to-camel-case";
 import chalk from "chalk";
 import { upperCamelCase } from "../../utils/text-to-upper-camel-case";
+import { routeToNextJsPath } from "./utils/route-to-next-js-path";
+import { staticParentPath } from "./utils/static-parent-path";
+import { lastStaticSegment } from "./utils/last-static-segment";
 
 const successLog = (text: string) => console.log(chalk.greenBright(text));
 const infoLog = (text: string) => console.log(chalk.blueBright(text));
 
 const cwd = process.cwd();
-
-// ? Helpers only for route generation with Next JS
-/**
- * Converts a route string to the folder structure format by replacing dynamic segments with brackets.
- * @param route - The route pattern (e.g., "/folder1/:folder2/:folder3")
- * @returns The folder structure format (e.g., "folder1/[folder2]/[folder3]")
- */
-function routeToNextJsPath(route: string) {
-  return route
-    .split("/")
-    .map((k) => (k.startsWith(":") ? `[${k.slice(1)}]` : k))
-    .join(path.sep);
-}
-
-/**
- * Extracts the last static segment from a route string.
- *
- * @param route - The route pattern (e.g., "/folder1/:folder2/:folder3")
- * @returns The last static segment (e.g., "folder3")
- */
-function lastStaticSegment(route: string) {
-  const parts = route.split("/");
-  let last = "";
-  for (const part of parts) {
-    if (part.startsWith(":")) break;
-    if (part) last = part;
-  }
-  return last;
-}
-
-/**
- * Extracts the parent static segments from a route string.
- *
- * @param route - The route pattern (e.g., "/folder1/:folder2/:folder3")
- * @returns The parent static segments joined by "/" (e.g., "folder1")
- */
-function staticParentPath(route: string) {
-  const parts = route.split("/");
-  let staticParts = [];
-  for (const part of parts) {
-    if (part.startsWith(":")) break;
-    if (part) staticParts.push(part);
-  }
-  return staticParts.join("/");
-}
 
 // -------------------- FUNCTIONS --------------------
 // 1. Route generation
