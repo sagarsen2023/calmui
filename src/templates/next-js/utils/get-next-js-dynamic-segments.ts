@@ -5,7 +5,7 @@
  *   - isDynamic: boolean indicating if the route has dynamic segments
  *   - segments: array of dynamic segment names (e.g., ["folder2", "folder3"])
  */
-function getTanstackDynamicSegments(route: string): {
+function getNextJsDynamicSegments(route: string): {
   isDynamic: boolean;
   segments: string[];
 } {
@@ -46,4 +46,13 @@ function getTanstackDynamicSegments(route: string): {
   };
 }
 
-export { getTanstackDynamicSegments };
+function generateNextJsDynamicSegmentInterface(
+  dynamicSegments: string[]
+): string {
+  return `
+interface PageProps {
+  ${dynamicSegments.map((seg) => `${seg}: string;`).join("\n  ")}
+}\n`;
+}
+
+export { getNextJsDynamicSegments, generateNextJsDynamicSegmentInterface };

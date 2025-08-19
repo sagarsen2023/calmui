@@ -11,6 +11,7 @@ import { getTanstackDynamicSegments } from "./utils/get-tanstack-dynamic-segment
 
 const successLog = (text: string) => console.log(chalk.greenBright(text));
 const infoLog = (text: string) => console.log(chalk.blueBright(text));
+const errorLog = (text: string) => console.log(chalk.redBright(text));
 
 const cwd = process.cwd();
 
@@ -211,27 +212,31 @@ const generateTypescriptType = ({
  * @returns {void}
  */
 export const viteRouteGenerator = (route: string) => {
-  const { fileExtension } = getCalmUiJson();
+  try {
+    const { fileExtension } = getCalmUiJson();
+    const parentPath = staticParentPath(route);
+    const lastStaticPath = lastStaticSegment(route);
 
-  const parentPath = staticParentPath(route);
-  const lastStaticPath = lastStaticSegment(route);
+    // ---------- GENERATING ROUTES ----------
+    generateRoute({
+      route,
+      fileExtension,
+    });
 
-  // ---------- GENERATING ROUTES ----------
-  generateRoute({
-    route,
-    fileExtension,
-  });
+    // ---------- GENERATING MODULES FOR USING IN PAGES ----------
+    generateModule({
+      fileExtension,
+      lastStaticPath,
+      parentPath,
+    });
 
-  // ---------- GENERATING MODULES FOR USING IN PAGES ----------
-  generateModule({
-    fileExtension,
-    lastStaticPath,
-    parentPath,
-  });
+    // ---------- GENERATING SERVICE FILE ----------
+    generateService({ fileExtension, lastStaticPath });
 
-  // ---------- GENERATING SERVICE FILE ----------
-  generateService({ fileExtension, lastStaticPath });
-
-  // ---------- GENERATING TYPESCRIPT INTERFACES ----------
-  generateTypescriptType({ fileExtension, lastStaticPath, parentPath });
+    // ---------- GENERATING TYPESCRIPT INTERFACES ----------
+    generateTypescriptType({ fileExtension, lastStaticPath, parentPath });
+  } catch (e) {
+    const error = e as Error;
+    errorLog(error.message ?? "Unable to generate route");
+  }
 };
