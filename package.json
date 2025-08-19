@@ -10,7 +10,8 @@
     "copy-templates": "node --no-warnings --loader ts-node/esm src/scripts/copy-templates.ts",
     "build": "tsc && tsc-esm-fix dist/**/*.js && npm run copy-templates",
     "local-install": "npm run build && npm link && npm i -g .",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "release": "./scripts/release.sh"
   },
   "keywords": [
     "cli",
