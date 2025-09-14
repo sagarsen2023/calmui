@@ -43,6 +43,7 @@ export const initCommand = new Command("init")
 
       // Running post-install commands
       postInstallCommands?.forEach((cmd) => {
+        if (cmd === "") return;
         execSync(cmd, {
           stdio: "inherit",
         });
