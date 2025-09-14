@@ -1,5 +1,5 @@
-import { ConfigOptions } from "..";
 import os from "os";
+import { ConfigOptions } from "../../types/initiator.types";
 
 export const nextJsConfig = async (
   folderName: string,

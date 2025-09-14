@@ -23,10 +23,10 @@ export const initCommand = new Command("init")
       // Asking user to select template
       // ? The templates will be automatically fetched from the templates directory
       const choice = await customPrompt({
-        message: "Choose a template",
+        message: "Choose a framework",
         choices: getTemplates(),
       });
-      log(chalk.greenBright(`Creating template: ${choice}`));
+      log(chalk.greenBright(`Initializing framework ---> ${choice}\n`));
 
       const target = folder || ".";
       const {
