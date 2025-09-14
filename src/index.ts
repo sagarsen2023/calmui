@@ -8,7 +8,7 @@ const program = new Command();
 program
   .name("calmui")
   .description("CLI to scaffold projects and generate modules for frontend")
-  .version("1.0.3");
+  .version("1.1.0");
 
 // Initialize project command
 program.addCommand(initCommand);
