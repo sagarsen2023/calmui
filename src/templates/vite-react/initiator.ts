@@ -203,12 +203,12 @@ export const viteReactConfig = async (
     ],
     finalizationCommands: [
       (isAdmin &&
-        "npx shadcn@latest init && npx shadcn@latest add sidebar card label") ||
+        `cd ${folderName} && npx shadcn@latest init && npx shadcn@latest add sidebar card label`) ||
         "",
-      "git init",
-      `git add . ${isWindows ? "> NUL 2>&1" : "> /dev/null 2>&1"}`,
-      "git branch -M main",
-      `git commit -m "Initialized base project" ${
+      `cd ${folderName} && git init`,
+      `cd ${folderName} && git add . ${isWindows ? "> NUL 2>&1" : "> /dev/null 2>&1"}`,
+      `cd ${folderName} && git branch -M main`,
+      `cd ${folderName} && git commit -m "Initialized base project" ${
         isWindows ? "> NUL 2>&1" : "> /dev/null 2>&1"
       }`,
     ],
