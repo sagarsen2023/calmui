@@ -1,5 +1,9 @@
 import os from "os";
 import { ConfigOptions } from "../../types/initiator.types";
+import { customPrompt } from "../../utils/custom-prompt";
+import chalk from "chalk";
+
+const choices = ["Blank Template", "Admin Template"];
 
 export const nextJsConfig = async (
   folderName: string,
@@ -7,9 +11,23 @@ export const nextJsConfig = async (
   const templateDir = `${__dirname}/project-files`;
   const isWindows = os.platform() === "win32";
 
+  const choice = await customPrompt({
+    message: "Select a template to initialize the project:",
+    choices,
+  });
+
+  const isAdmin = choice === "Admin Template";
+
+  isAdmin &&
+    console.log(
+      chalk.blueBright(
+        "\nYour admin template will be initialized with Shadcn UI\n",
+      ),
+    );
+
   return {
     name: "Next Js",
-    command: `npx create-next-app@latest ${folderName} --typescript --app --src-dir --no-import-alias`,
+    command: `npx create-next-app@latest ${folderName} --tailwind --typescript --app --src-dir --no-import-alias`,
     postInstallCommands: [],
     templateFiles: [
       {
@@ -61,10 +79,10 @@ export const nextJsConfig = async (
       },
     ],
     finalizationCommands: [
-      "git init",
-      `git add . ${isWindows ? "> NUL 2>&1" : "> /dev/null 2>&1"}`,
-      "git branch -M main",
-      `git commit -m "Added base project files" ${
+      `cd ${folderName} && git init`,
+      `cd ${folderName} && git add . ${isWindows ? "> NUL 2>&1" : "> /dev/null 2>&1"}`,
+      `cd ${folderName} && git branch -M main`,
+      `cd ${folderName} && git commit -m "Initialized base project" ${
         isWindows ? "> NUL 2>&1" : "> /dev/null 2>&1"
       }`,
     ],
