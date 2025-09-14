@@ -14,10 +14,26 @@ export function customPrompt({
   const log = console.log;
   return new Promise((resolve) => {
     let selected = 0;
+    let isFirstRender = true;
 
     const render = () => {
-      console.clear();
-      log(message);
+      if (!isFirstRender) {
+        process.stdout.write(`\x1b[${choices.length}A`);
+
+        for (let i = 0; i < choices.length; i++) {
+          process.stdout.write("\x1b[2K");
+          if (i < choices.length - 1) {
+            process.stdout.write("\x1b[1B");
+          }
+        }
+
+        process.stdout.write(`\x1b[${choices.length - 1}A`);
+      } else {
+        log(message);
+        isFirstRender = false;
+      }
+
+      // Render the options
       choices.forEach((c, i) => {
         const option = firstLetterCapitalize({
           str: c,
@@ -51,10 +67,11 @@ export function customPrompt({
         render();
       } else if (key.name === "return") {
         rl.close();
-        process.stdin.setRawMode(false);
+        if (process.stdin.isTTY) process.stdin.setRawMode(false);
         resolve(choices[selected]);
       } else if (key.ctrl && key.name === "c") {
         rl.close();
+        if (process.stdin.isTTY) process.stdin.setRawMode(false);
         process.exit();
       }
     });

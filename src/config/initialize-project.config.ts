@@ -12,10 +12,10 @@ const log = console.log;
 export const initCommand = new Command("init")
   .argument(
     "[folder]",
-    "folder to initialize project in (default: current folder)"
+    "folder to initialize project in (default: current folder)",
   )
   .description(
-    "Initialize project in the specified folder (default: current folder)"
+    "Initialize project in the specified folder (default: current folder)",
   )
   .showHelpAfterError()
   .action(async (folder?: string) => {
@@ -23,10 +23,10 @@ export const initCommand = new Command("init")
       // Asking user to select template
       // ? The templates will be automatically fetched from the templates directory
       const choice = await customPrompt({
-        message: "Choose a template",
+        message: "Choose a framework",
         choices: getTemplates(),
       });
-      log(chalk.greenBright(`Creating template: ${choice}`));
+      log(chalk.greenBright(`Initializing framework ---> ${choice}\n`));
 
       const target = folder || ".";
       const {
@@ -34,7 +34,7 @@ export const initCommand = new Command("init")
         postInstallCommands,
         templateFiles,
         finalizationCommands,
-      } = templateConfigs[choice].init(target);
+      } = await templateConfigs[choice].init(target);
 
       // Initialize the project
       execSync(command, {
@@ -43,6 +43,7 @@ export const initCommand = new Command("init")
 
       // Running post-install commands
       postInstallCommands?.forEach((cmd) => {
+        if (cmd === "") return;
         execSync(cmd, {
           stdio: "inherit",
         });
@@ -60,8 +61,8 @@ export const initCommand = new Command("init")
           } catch (error: any) {
             log(
               chalk.yellow(
-                `   ⚠️  Warning: Could not copy ${source} to ${target}: ${error.message}`
-              )
+                `   ⚠️  Warning: Could not copy ${source} to ${target}: ${error.message}`,
+              ),
             );
           }
         });
@@ -69,6 +70,7 @@ export const initCommand = new Command("init")
 
       // ? Finalizing project setup
       finalizationCommands?.forEach((cmd) => {
+        if (cmd === "") return;
         execSync(cmd, {
           stdio: "inherit",
         });
