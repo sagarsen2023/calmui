@@ -54,8 +54,8 @@ export const nextJsConfig = async (
 
   const blankSpecificFiles: TemplateFile[] = [
     {
-      source: `${templateDir}/src/components/ui/.gitkeep`,
-      target: `${folderName}/src/components/ui/.gitkeep`,
+      source: `${templateDir}/src/components/.gitkeep`,
+      target: `${folderName}/src/components/.gitkeep`,
     },
     {
       source: `${templateDir}/src/constants/.gitkeep`,
