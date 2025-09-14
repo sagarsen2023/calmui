@@ -8,10 +8,10 @@
   },
   "scripts": {
     "copy-templates": "node --no-warnings --loader ts-node/esm src/scripts/copy-templates.ts",
-    "build": "tsc && tsc-esm-fix dist/**/*.js && npm run copy-templates",
-    "local-install": "npm run build && npm link && npm i -g .",
+    "build": "eslint . && tsc && tsc-esm-fix dist/**/*.js && npm run copy-templates",
+    "local-install": "eslint . && npm run build && npm link && npm i -g .",
     "prepublishOnly": "npm run build",
-    "release": "./scripts/release.sh"
+    "release": "eslint . && ./scripts/release.sh"
   },
   "keywords": [
     "cli",
@@ -43,6 +43,10 @@
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.43.0",
+    "@typescript-eslint/parser": "^8.43.0",
+    "eslint": "^9.35.0",
+    "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
     "tsc-esm-fix": "^3.1.2",
     "typescript": "^5.9.2"

@@ -8,6 +8,7 @@ import { staticParentPath } from "./utils/static-parent-path";
 import { lastStaticSegment } from "./utils/last-static-segment";
 import { routeToTanstackPath } from "./utils/route-to-tanstack-path";
 import { getTanstackDynamicSegments } from "./utils/get-tanstack-dynamic-segments";
+import { extractInnerWord } from "../../utils/extract-inner-bracket-word";
 
 const successLog = (text: string) => console.log(chalk.greenBright(text));
 const infoLog = (text: string) => console.log(chalk.blueBright(text));
@@ -58,7 +59,7 @@ function RouteComponent() {
   }
   return <div>Hello "${route}"!</div>
 }
-`
+`,
     );
     successLog(`✓ Generated route file: ${newRoutePath}`);
   } else {
@@ -86,7 +87,7 @@ const generateModule = ({
     "src",
     "modules",
     parentPath,
-    parentPath.endsWith(lastStaticPath) ? "" : lastStaticPath // ? If route is: /user/:id/:orders/create then the complete route will be /user/create
+    parentPath.endsWith(lastStaticPath) ? "" : lastStaticPath, // ? If route is: /user/:id/:orders/create then the complete route will be /user/create
   );
   fs.ensureDirSync(modulePath);
   const newModulePath = `${modulePath}/index.${fileExtension}x`;
@@ -105,7 +106,7 @@ const generateModule = ({
 }
 
 export default ${moduleName};
-`
+`,
     );
     successLog(`✓ Generated module file: ${newModulePath}`);
   } else {
@@ -150,7 +151,7 @@ export const ${textToCamelCase({
       //     });
       //   },
 };
-`
+`,
     );
     successLog(`✓ Generated service file: ${newServicePath}`);
   } else {
@@ -197,7 +198,7 @@ const generateTypescriptType = ({
       })}Type {
   // Define your type properties here
 }
-`
+`,
     );
     successLog(`✓ Generated typescript type file: ${newTypePath}`);
   } else {
@@ -214,8 +215,15 @@ const generateTypescriptType = ({
 export const viteRouteGenerator = (route: string) => {
   try {
     const { fileExtension } = getCalmUiJson();
-    const parentPath = staticParentPath(route);
-    const lastStaticPath = lastStaticSegment(route);
+    const parentPath = staticParentPath(route)
+      .split("/")
+      .map((seg) => extractInnerWord(seg))
+      .join("/");
+
+    const lastStaticPath = lastStaticSegment(route)
+      .split("/")
+      .map((seg) => extractInnerWord(seg))
+      .join("/");
 
     // ---------- GENERATING ROUTES ----------
     generateRoute({

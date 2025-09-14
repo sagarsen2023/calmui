@@ -4,11 +4,10 @@
 
 ### Why??
 
-Ever spent half an hour in a group call debating if it should be `components` or `Components`, `home` or `HomePage`, only to discover three different folder structures by the end of sprint?  
+Ever spent half an hour in a group call debating if it should be `components` or `Components`, `home` or `HomePage`, only to discover three different folder structures by the end of sprint?
 
 **CalmUI ends the chaos.**  
 With project structure, templates, and module files handled for you, you can finally spend less time renaming folders—and more time shipping code.
-
 
 ## 🚀 Features & Benefits
 
@@ -16,6 +15,7 @@ With project structure, templates, and module files handled for you, you can fin
 - **Custom scaffolding** for modules/routes—never worry about file/folder conventions again.
 - **Framework-aware**: detects and adapts to Vite, Next.js, etc.
 - **Dynamic route generation** supporting nested and parameterized routes.
+- **Pre configured templates** like blank template, admin template (Currently these two are available).
 - **TypeScript-first** setup with zero-config ESM/JS switching.
 - **Edge case handling**: guards against accidental overwrites and misconfiguration.
 - **Easy extensibility**—add your own templates as your needs grow!
@@ -76,6 +76,8 @@ calmui generate-route /my-route/:id
 calmui generate-route /my-route/:id/edit
 calmui generate-route /product-details/:slug
 calmui generate-route /users/accounts/orders/:id/:status/update
+calmui generate-route "/(auth)/sign-up" # for routes with route groups
+calmui generate-route "/(authenticated)/orders/:orderId" # for routes with route groups
 ```
 
 - Generates boilerplate, folder structure, and pre-wired modules for each part of the route.
