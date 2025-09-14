@@ -12,10 +12,10 @@ const log = console.log;
 export const initCommand = new Command("init")
   .argument(
     "[folder]",
-    "folder to initialize project in (default: current folder)"
+    "folder to initialize project in (default: current folder)",
   )
   .description(
-    "Initialize project in the specified folder (default: current folder)"
+    "Initialize project in the specified folder (default: current folder)",
   )
   .showHelpAfterError()
   .action(async (folder?: string) => {
@@ -34,7 +34,7 @@ export const initCommand = new Command("init")
         postInstallCommands,
         templateFiles,
         finalizationCommands,
-      } = templateConfigs[choice].init(target);
+      } = await templateConfigs[choice].init(target);
 
       // Initialize the project
       execSync(command, {
@@ -60,8 +60,8 @@ export const initCommand = new Command("init")
           } catch (error: any) {
             log(
               chalk.yellow(
-                `   ⚠️  Warning: Could not copy ${source} to ${target}: ${error.message}`
-              )
+                `   ⚠️  Warning: Could not copy ${source} to ${target}: ${error.message}`,
+              ),
             );
           }
         });

@@ -17,27 +17,27 @@ function getTanstackDynamicSegments(route: string): {
           const segmentName = seg.slice(1);
           if (/^\d/.test(segmentName)) {
             throw new Error(
-              `x Dynamic segments cannot start with a number: ${seg}!`
+              `x Dynamic segments cannot start with a number: ${seg}!`,
             );
           }
           if (segmentName.includes("-")) {
             throw new Error(
-              `x Dynamic segments cannot contain dashes: ${seg}!`
+              `x Dynamic segments cannot contain dashes: ${seg}!`,
             );
           }
           if (/[?]/.test(segmentName)) {
             throw new Error(
-              `x Dynamic segments cannot contain question marks: ${seg}!`
+              `x Dynamic segments cannot contain question marks: ${seg}!`,
             );
           }
           if (!/^[A-Za-z_]\w*$/.test(segmentName)) {
             throw new Error(
-              `x Dynamic segments can only contain alphanumeric characters and underscores, and must start with a letter or underscore: ${seg}!`
+              `x Dynamic segments can only contain alphanumeric characters and underscores, and must start with a letter or underscore: ${seg}!`,
             );
           }
           if (seg.split("-").length > 1) {
             throw new Error(
-              `x Dynamic segments cannot contain dashes: ${seg}!`
+              `x Dynamic segments cannot contain dashes: ${seg}!`,
             );
           }
           return seg.slice(1);

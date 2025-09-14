@@ -16,9 +16,8 @@ export interface ConfigOptions {
 
 interface TemplateConfig {
   [key: string]: {
-    init: (folderName: string) => ConfigOptions;
+    init: (folderName: string) => Promise<ConfigOptions>;
     generateRoute?: (route: string) => void;
-    // migrateRoute?: (options: { from: string; to: string }) => void; // ? Coming Soon
   };
 }
 

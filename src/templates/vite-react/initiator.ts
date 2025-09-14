@@ -1,9 +1,21 @@
 import { ConfigOptions } from "..";
 import os from "os";
+import { customPrompt } from "../../utils/custom-prompt";
 
-export const viteReactConfig = (folderName: string): ConfigOptions => {
+const choices = ["Blank Template", "Admin Template"];
+
+export const viteReactConfig = async (
+  folderName: string,
+): Promise<ConfigOptions> => {
   const templateDir = `${__dirname}/project-files`;
   const isWindows = os.platform() === "win32";
+
+  const choice = customPrompt({
+    message: "Select a template to initialize the project:",
+    choices,
+  });
+
+  console.log("Selected Template:", choice);
 
   return {
     name: "Vite React",
@@ -11,10 +23,16 @@ export const viteReactConfig = (folderName: string): ConfigOptions => {
     postInstallCommands: [
       // Install dependencies
       `cd ${folderName} && npm i tailwindcss postcss autoprefixer @tailwindcss/vite @tanstack/react-router @tanstack/router-plugin lucide-react js-cookie`,
-      `cd ${folderName} && npm i -D @tanstack/router-devtools -D @vitejs/plugin-react-swc -D @types/node -D @types/js-cookie ${isWindows ? "> NUL 2>&1" : "> /dev/null 2>&1"}`,
+      `cd ${folderName} && npm i -D @tanstack/router-devtools -D @vitejs/plugin-react-swc -D @types/node -D @types/js-cookie ${
+        isWindows ? "> NUL 2>&1" : "> /dev/null 2>&1"
+      }`,
       // Cleanup unnecessary files
-      isWindows ? `del /f ${folderName}\\src\\App.tsx` : `rm -f ${folderName}/src/App.tsx`,
-      isWindows ? `del /f ${folderName}\\src\\App.css` : `rm -f ${folderName}/src/App.css`,
+      isWindows
+        ? `del /f ${folderName}\\src\\App.tsx`
+        : `rm -f ${folderName}/src/App.tsx`,
+      isWindows
+        ? `del /f ${folderName}\\src\\App.css`
+        : `rm -f ${folderName}/src/App.css`,
     ],
     templateFiles: [
       {
@@ -94,10 +112,12 @@ export const viteReactConfig = (folderName: string): ConfigOptions => {
       },
     ],
     finalizationCommands: [
-      `git init`,
+      "git init",
       `git add . ${isWindows ? "> NUL 2>&1" : "> /dev/null 2>&1"}`,
-      `git branch -M main`,
-      `git commit -m "Initialized base project" ${isWindows ? "> NUL 2>&1" : "> /dev/null 2>&1"}`,
+      "git branch -M main",
+      `git commit -m "Initialized base project" ${
+        isWindows ? "> NUL 2>&1" : "> /dev/null 2>&1"
+      }`,
     ],
   };
 };

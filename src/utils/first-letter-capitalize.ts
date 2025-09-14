@@ -9,5 +9,5 @@ export default function firstLetterCapitalize({
     ?.toLowerCase()
     ?.split(separator)
     ?.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    ?.join(' ');
+    ?.join(" ");
 }

@@ -1,7 +1,9 @@
 import { ConfigOptions } from "..";
 import os from "os";
 
-export const nextJsConfig = (folderName: string): ConfigOptions => {
+export const nextJsConfig = async (
+  folderName: string,
+): Promise<ConfigOptions> => {
   const templateDir = `${__dirname}/project-files`;
   const isWindows = os.platform() === "win32";
 
@@ -59,9 +61,9 @@ export const nextJsConfig = (folderName: string): ConfigOptions => {
       },
     ],
     finalizationCommands: [
-      `git init`,
+      "git init",
       `git add . ${isWindows ? "> NUL 2>&1" : "> /dev/null 2>&1"}`,
-      `git branch -M main`,
+      "git branch -M main",
       `git commit -m "Added base project files" ${
         isWindows ? "> NUL 2>&1" : "> /dev/null 2>&1"
       }`,
