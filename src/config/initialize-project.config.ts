@@ -69,6 +69,7 @@ export const initCommand = new Command("init")
 
       // ? Finalizing project setup
       finalizationCommands?.forEach((cmd) => {
+        if (cmd === "") return;
         execSync(cmd, {
           stdio: "inherit",
         });

@@ -59,10 +59,6 @@ export const viteReactConfig = async (
       target: `${folderName}/src/index.css`,
     },
     {
-      source: `${templateDir}/src/modules/home/index.tsx`,
-      target: `${folderName}/src/modules/home/index.tsx`,
-    },
-    {
       source: `${templateDir}/src/routes/__root.tsx`,
       target: `${folderName}/src/routes/__root.tsx`,
     },
@@ -85,6 +81,11 @@ export const viteReactConfig = async (
   ];
 
   const blankSpecificFiles: TemplateFile[] = [
+    // ? Modules
+    {
+      source: `${templateDir}/src/modules/home/index.tsx`,
+      target: `${folderName}/src/modules/home/index.tsx`,
+    },
     // ? Routes
     {
       source: `${templateDir}/src/routes/index.tsx`,
@@ -201,7 +202,8 @@ export const viteReactConfig = async (
       ...getTemplateFilesBasedOnChoice(),
     ],
     finalizationCommands: [
-      (isAdmin && "npx shadcn@latest init && npx shadcn@latest add sidebar card label") ||
+      (isAdmin &&
+        "npx shadcn@latest init && npx shadcn@latest add sidebar card label") ||
         "",
       "git init",
       `git add . ${isWindows ? "> NUL 2>&1" : "> /dev/null 2>&1"}`,
