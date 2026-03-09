@@ -1,6 +1,6 @@
 # Source files (keep dist/)
 src/
-tsconfig.json
+/tsconfig.json
 *.ts
 !dist/**/*.ts
 
@@ -22,7 +22,7 @@ Thumbs.db
 
 # Git files
 .git/
-.gitignore
+/.gitignore
 
 # Testing
 test/

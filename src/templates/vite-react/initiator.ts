@@ -31,7 +31,7 @@ export const viteReactConfig = async (
       target: `${folderName}/calmui.json`,
     },
     {
-      source: `${templateDir}/.gitignore`,
+      source: `${templateDir}/_gitignore`,
       target: `${folderName}/.gitignore`,
     },
     {
