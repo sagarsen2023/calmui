@@ -179,7 +179,7 @@ export const viteReactConfig = async (
 
   return {
     name: "Vite React",
-    command: `npm create vite@latest ${folderName} -- --template react-ts`,
+    command: `npm create vite@latest ${folderName} -- --template react-ts --no-interactive`,
     postInstallCommands: [
       // Install dependencies
       `cd ${folderName} && npm i tailwindcss postcss autoprefixer @tailwindcss/vite @tanstack/react-router @tanstack/router-plugin lucide-react js-cookie jotai`,
@@ -203,7 +203,7 @@ export const viteReactConfig = async (
     ],
     finalizationCommands: [
       (isAdmin &&
-        `cd ${folderName} && npx shadcn@latest init && npx shadcn@latest add sidebar card label`) ||
+        `cd ${folderName} && npx shadcn@latest init -y && npx shadcn@latest add sidebar card label`) ||
         "",
       `cd ${folderName} && git init`,
       `cd ${folderName} && git add . ${isWindows ? "> NUL 2>&1" : "> /dev/null 2>&1"}`,
